@@ -73,11 +73,10 @@ public abstract class PluginTask extends GameTickEvent implements Callable<Integ
 				submit();
 			}
 
-			resetCountdown();
-			setThreadRunning(true);
-			notifyAll();
-		}
-	}
+                        resetCountdown();
+                        setThreadRunning(true);
+                }
+        }
 
 	@Override
 	public synchronized void stop() {
@@ -142,17 +141,19 @@ public abstract class PluginTask extends GameTickEvent implements Callable<Integ
 		return initialized.get();
 	}
 
-	private void setInitialized(final boolean started) {
-		initialized.getAndSet(started);
-	}
+       private synchronized void setInitialized(final boolean started) {
+               initialized.getAndSet(started);
+               notifyAll();
+       }
 
 	public boolean isThreadRunning() {
 		return threadRunning.get();
 	}
 
-	private void setThreadRunning(final boolean threadRunning) {
-		this.threadRunning.getAndSet(threadRunning);
-	}
+       private synchronized void setThreadRunning(final boolean threadRunning) {
+               this.threadRunning.getAndSet(threadRunning);
+               notifyAll();
+       }
 
 	public Thread getPluginThread() {
 		return pluginThread;
